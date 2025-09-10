@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Session | VCF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+   
+  </style>
+</head>
+<body>
+  <!-- Logo -->
+  <img src="./media/logo.svg" alt="VCF Session" class="logo">
+
+  <!-- Add-contact card (always visible) -->
+  <div class="glass">
+    <h1 id="sessionTitle"></h1>
+    <p>Session expires in <span id="countdown"></span></p>
+
+    <form id="addForm">
+      <div class="stack">
+        <input type="text" id="name" placeholder="Name" required>
+        <input type="tel" id="phone" placeholder="Phone" required>
+      </div>
+      <button type="submit">Add</button>
+    </form>
+  </div>
+
+  <!-- Contacts + VCF (hidden until expired) -->
+  <div id="contactsWrap" class="glass hidden">
+    <h2>Contacts (<span id="total">0</span>)</h2>
+    <ul id="list"></ul>
+    <a id="dl" class="btn">Download VCF</a>
+  </div>
+
+  <!-- WhatsApp group link -->
+  <div class="wa">
+    Join our WhatsApp group:<br>
+    <a href="https://chat.whatsapp.com/Ca964nXye06F3vXbmW9kWq?mode=ems_copy_c" target="_blank" rel="noopener">
+      VCF GROUP
+    </a>
+  </div>
+
+  <script>
+    const id = location.pathname.split('/').pop();
+    if (!id) location.href = '/';
+
+    const titleEl   = document.getElementById('sessionTitle');
+    const countEl   = document.getElementById('countdown');
+    const totalEl   = document.getElementById('total');
+    const listEl    = document.getElementById('list');
+    const dlEl      = document.getElementById('dl');
+    const formEl    = document.getElementById('addForm');
+    const wrapEl    = document.getElementById('contactsWrap');
+
+    let expired = false;
+
+    async function load() {
+      const res = await fetch(`/api/session/${id}`);
+      if (!res.ok) { document.body.innerHTML = '<h1>Session not found or expired</h1>'; return; }
+      const data = await res.json();
+      titleEl.textContent = data.name;
+      renderList(data.contacts);
+      startCountdown(data.expiresAt);
+    }
+    load();
+
+    function startCountdown(expiresAt) {
+      const tick = () => {
+        const left = expiresAt - Date.now();
+        if (left <= 0) {
+          expired = true;
+          countEl.textContent = 'Expired';
+          formEl.classList.add('hidden');
+          wrapEl.classList.remove('hidden');
+          dlEl.href = `/api/session/${id}/contacts.vcf`;
+          return;
+        }
+        const m = Math.floor(left / 60000);
+        const s = Math.floor((left % 60000) / 1000);
+        countEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+      };
+      tick(); setInterval(tick, 1000);
+    }
+
+    formEl.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (expired) return;
+      const name  = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      if (!name || !phone) return;
+
+      await fetch(`/api/session/${id}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone })
+      });
+      formEl.reset();
+      load();
+    });
+
+    function renderList(contacts) {
+      totalEl.textContent = contacts.length;
+      listEl.innerHTML = '';
+      contacts.forEach(c => {
+        const li = document.createElement('li');
+        li.textContent = `${c.name} – ${c.phone}`;
+        listEl.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
