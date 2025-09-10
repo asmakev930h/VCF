@@ -34,10 +34,6 @@ function readSession(id) {
   if (!fs.existsSync(file)) return null;
   try {
     const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-    if (data.expiresAt < Date.now()) {
-      fs.unlinkSync(file);
-      return null;
-    }
     return data;
   } catch { return null; }
 }
@@ -50,8 +46,8 @@ function sanitise(str) {
   return str.replace(/[\x00-\x1F\x7F]/g, ' ').trim();
 }
 
-app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'new.html')));
-app.get('/new', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'new.html')));
+app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'create.html')));
+app.get('/create', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'create.html')));
 app.get('/session/:id', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'session.html')));
 
 app.post('/api/create', (req, res) => {
