@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="Create secure, time-limited contact sharing sessions. Share contacts safely with automatic expiration."/>
+  <meta name="keywords" content="contact sharing, VCF, secure sharing, temporary links"/>
+  <meta property="og:title" content="VCF Session - Secure Contact Sharing"/>
+  <meta property="og:description" content="Create secure, time-limited contact sharing sessions"/>
+  <meta property="og:type" content="website"/>
+  
+  <title>Create Contact Session | VCF Session</title>
+  
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #dbeafe;
+      --secondary: #64748b;
+      --success: #059669;
+      --error: #dc2626;
+      --warning: #d97706;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --border-focus: #2563eb;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #3b82f6;
+        --primary-hover: #2563eb;
+        --primary-light: #1e3a8a;
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-card: #1e293b;
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-muted: #64748b;
+        --border: #334155;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 480px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+    }
+
+    .logo {
+      height: 48px;
+      margin: 0 auto 2rem;
+      display: block;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.025em;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .duration-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .duration-option {
+      position: relative;
+    }
+
+    .duration-radio {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .duration-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.875rem;
+      font-weight: 500;
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+    }
+
+    .duration-radio:checked + .duration-label {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .duration-label:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .duration-radio:checked + .duration-label:hover {
+      color: white;
+    }
+
+    .create-btn {
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .create-btn:hover:not(:disabled) {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .create-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .create-btn:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .loading-spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error-message {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: var(--error);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .error-message {
+        background: #450a0a;
+        border-color: #7f1d1d;
+      }
+    }
+
+    .success-section {
+      display: none;
+      text-align: center;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .success-section.show {
+      display: block;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: white;
+    }
+
+    .success-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .success-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .url-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .url-display {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .url-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+      outline: none;
+    }
+
+    .copy-btn {
+      padding: 0.5rem 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .copy-btn.copied {
+      background: var(--success);
+    }
+
+    .new-session-btn {
+      width: 100%;
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .new-session-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 0.5rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .duration-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <img src="/media/logo.svg" alt="VCF Session" class="logo">
+      
+      <div id="createForm">
+        <div class="header">
+          <h1>Create Contact Session</h1>
+          <p>Share contacts securely with automatic expiration</p>
+        </div>
+
+        <div id="errorMessage" class="error-message" role="alert"></div>
+
+        <form id="sessionForm">
+          <div class="form-group">
+            <label for="sessionName" class="form-label">Session Name</label>
+            <input 
+              id="sessionName" 
+              type="text" 
+              class="form-input"
+              placeholder="e.g., Team Meeting Contacts"
+              maxlength="60" 
+              required
+              autocomplete="off"
+              aria-describedby="sessionNameHelp"
+            >
+          </div>
+
+ <div class="form-group">
+  <label class="form-label">Session Duration</label>
+  <div class="duration-grid">
+    <div class="duration-option">
+      <input type="radio" id="duration5" name="duration" value="5" class="duration-radio">
+      <label for="duration5" class="duration-label">5 min</label>
+    </div>
+    <div class="duration-option">
+      <input type="radio" id="duration15" name="duration" value="15" class="duration-radio">
+      <label for="duration15" class="duration-label">15 min</label>
+    </div>
+    <div class="duration-option">
+      <input type="radio" id="duration30" name="duration" value="30" class="duration-radio" checked>
+      <label for="duration30" class="duration-label">30 min</label>
+    </div>
+    <div class="duration-option">
+      <input type="radio" id="duration60" name="duration" value="60" class="duration-radio">
+      <label for="duration60" class="duration-label">1 hr</label>
+    </div>
+    <div class="duration-option">
+      <input type="radio" id="duration300" name="duration" value="300" class="duration-radio">
+      <label for="duration300" class="duration-label">5 hrs</label>
+    </div>
+    <div class="duration-option">
+      <input type="radio" id="duration420" name="duration" value="420" class="duration-radio">
+      <label for="duration420" class="duration-label">7 hrs</label>
+    </div>
+  </div>
+</div>
+
+
+          <button type="submit" id="createBtn" class="create-btn" disabled>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span id="createBtnText">Create Session</span>
+          </button>
+        </form>
+      </div>
+
+      <div id="successSection" class="success-section">
+        <div class="success-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20,6 9,17 4,12"></polyline>
+          </svg>
+        </div>
+        <h2 class="success-title">Session Created!</h2>
+        <p class="success-description">Share this link with participants to collect contacts</p>
+        
+        <div class="url-container">
+          <div class="url-display">
+            <input id="urlInput" type="text" class="url-input" readonly>
+            <button id="copyBtn" class="copy-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span id="copyBtnText">Copy</span>
+            </button>
+          </div>
+        </div>
+
+        <button id="newSessionBtn" class="new-session-btn">Create Another Session</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Join our WhatsApp group: 
+    <a href="https://chat.whatsapp.com/Ca964nXye06F3vXbmW9kWq?mode=ems_copy_c" target="_blank" rel="noopener">VCF GROUP</a>
+  </div>
+
+  <script>
+    const sessionForm = document.getElementById('sessionForm');
+    const sessionNameInput = document.getElementById('sessionName');
+    const createBtn = document.getElementById('createBtn');
+    const createBtnText = document.getElementById('createBtnText');
+    const errorMessage = document.getElementById('errorMessage');
+    const createFormSection = document.getElementById('createForm');
+    const successSection = document.getElementById('successSection');
+    const urlInput = document.getElementById('urlInput');
+    const copyBtn = document.getElementById('copyBtn');
+    const copyBtnText = document.getElementById('copyBtnText');
+    const newSessionBtn = document.getElementById('newSessionBtn');
+
+    let isCreating = false;
+
+    // Form validation
+    function validateForm() {
+      const name = sanitizeInput(sessionNameInput.value);
+      createBtn.disabled = !name || isCreating;
+    }
+
+    function sanitizeInput(str) {
+      return str.replace(/[\x00-\x1F\x7F]/g, ' ').trim();
+    }
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+      setTimeout(() => {
+        errorMessage.style.display = 'none';
+      }, 5000);
+    }
+
+    function setLoading(loading) {
+      isCreating = loading;
+      createBtn.disabled = loading || !sanitizeInput(sessionNameInput.value);
+      
+      if (loading) {
+        createBtnText.textContent = 'Creating...';
+        createBtn.insertAdjacentHTML('afterbegin', '<div class="loading-spinner"></div>');
+      } else {
+        createBtnText.textContent = 'Create Session';
+        const spinner = createBtn.querySelector('.loading-spinner');
+        if (spinner) spinner.remove();
+      }
+    }
+
+    // Event listeners
+    sessionNameInput.addEventListener('input', validateForm);
+    sessionNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !createBtn.disabled) {
+        sessionForm.dispatchEvent(new Event('submit'));
+      }
+    });
+
+    sessionForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (isCreating) return;
+      
+      const name = sanitizeInput(sessionNameInput.value);
+      const duration = document.querySelector('input[name="duration"]:checked').value;
+      
+      if (!name) {
+        showError('Please enter a session name');
+        return;
+      }
+
+      setLoading(true);
+      errorMessage.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sessionName: name,
+            minutes: parseInt(duration)
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.id) {
+          const sessionUrl = `${window.location.origin}/session/${data.id}`;
+          urlInput.value = sessionUrl;
+          
+          createFormSection.style.display = 'none';
+          successSection.classList.add('show');
+          
+          // Auto-select URL for easy copying
+          setTimeout(() => {
+            urlInput.select();
+          }, 100);
+        } else {
+          showError(data.error || 'Failed to create session. Please try again.');
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+        showError('Network error. Please check your connection and try again.');
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(urlInput.value);
+        copyBtnText.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+        
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      } catch (error) {
+        // Fallback for older browsers
+        urlInput.select();
+        document.execCommand('copy');
+        copyBtnText.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+        
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      }
+    });
+
+    newSessionBtn.addEventListener('click', () => {
+      successSection.classList.remove('show');
+      createFormSection.style.display = 'block';
+      sessionForm.reset();
+      document.getElementById('duration5').checked = true;
+      validateForm();
+    });
+
+    // Initialize
+    validateForm();
+
+    // Auto-focus on session name input
+    setTimeout(() => {
+      sessionNameInput.focus();
+    }, 100);
+  </script>
+</body>
+</html>

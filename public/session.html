@@ -3,20 +3,12 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="Join a secure contact sharing session. Add your contact information safely."/>
-  <meta name="keywords" content="contact sharing, VCF, secure sharing, contact collection"/>
-  <meta property="og:title" content="Contact Session | VCF Session"/>
-  <meta property="og:description" content="Join a secure contact sharing session"/>
-  <meta property="og:type" content="website"/>
-  
   <title>Contact Session | VCF Session</title>
-  
+
   <style>
     :root {
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
-      --primary-light: #dbeafe;
-      --secondary: #64748b;
       --success: #059669;
       --error: #dc2626;
       --warning: #d97706;
@@ -27,21 +19,15 @@
       --text-secondary: #64748b;
       --text-muted: #94a3b8;
       --border: #e2e8f0;
-      --border-focus: #2563eb;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
       --radius: 8px;
       --radius-lg: 12px;
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition: all .2s cubic-bezier(.4,0,.2,1);
     }
-
     @media (prefers-color-scheme: dark) {
       :root {
         --primary: #3b82f6;
         --primary-hover: #2563eb;
-        --primary-light: #1e3a8a;
         --bg-primary: #0f172a;
         --bg-secondary: #1e293b;
         --bg-card: #1e293b;
@@ -49,18 +35,9 @@
         --text-secondary: #cbd5e1;
         --text-muted: #64748b;
         --border: #334155;
-        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
       }
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       height: 100%;
       font-family: var(--font-sans);
@@ -68,452 +45,47 @@
       color: var(--text-primary);
       line-height: 1.6;
     }
-
-    .container {
-      min-height: 100vh;
-      padding: 1rem;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-    }
-
-    .header {
-      text-align: center;
-      padding: 2rem 0;
-    }
-
-    .logo {
-      height: 48px;
-      margin-bottom: 1rem;
-    }
-
-    .session-title {
-      font-size: 1.875rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.025em;
-    }
-
-    .session-status {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      color: var(--text-secondary);
-      font-size: 1rem;
-    }
-
-    .status-indicator {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--success);
-      animation: pulse 2s infinite;
-    }
-
-    .status-indicator.expired {
-      background: var(--error);
-      animation: none;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .countdown {
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    .countdown.warning {
-      color: var(--warning);
-    }
-
-    .countdown.expired {
-      color: var(--error);
-    }
-
-    .main-content {
-      max-width: 800px;
-      margin: 0 auto;
-      display: grid;
-      gap: 2rem;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--primary-hover));
-    }
-
-    .card-header {
-      margin-bottom: 1.5rem;
-    }
-
-    .card-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .card-description {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-    }
-
-    .form-grid {
-      display: grid;
-      gap: 1rem;
-    }
-
-    @media (min-width: 640px) {
-      .form-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      
-      .form-group.full-width {
-        grid-column: 1 / -1;
-      }
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .form-label .required {
-      color: var(--error);
-      margin-left: 0.25rem;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: 1rem;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      transition: var(--transition);
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
-    }
-
-    .form-input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .form-input.error {
-      border-color: var(--error);
-      box-shadow: 0 0 0 3px rgb(220 38 38 / 0.1);
-    }
-
-    .error-text {
-      color: var(--error);
-      font-size: 0.75rem;
-      margin-top: 0.25rem;
-      display: none;
-    }
-
-    .add-btn {
-      width: 100%;
-      padding: 0.875rem 1.5rem;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-
-    .add-btn:hover:not(:disabled) {
-      background: var(--primary-hover);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .add-btn:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    .add-btn:disabled {
-      background: var(--text-muted);
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .success-message {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      color: var(--success);
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius);
-      font-size: 0.875rem;
-      margin-bottom: 1rem;
-      display: none;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .success-message {
-        background: #022c22;
-        border-color: #166534;
-      }
-    }
-
-    .contacts-section {
-      display: none;
-    }
-
-    .contacts-section.show {
-      display: block;
-    }
-
-    .contacts-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-    }
-
-    .contact-count {
-      background: var(--primary-light);
-      color: var(--primary);
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.875rem;
-      font-weight: 600;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .contact-count {
-        background: var(--primary-light);
-        color: var(--primary);
-      }
-    }
-
-    .contacts-list {
-      list-style: none;
-      margin-bottom: 2rem;
-    }
-
-    .contact-item {
-      display: flex;
-      align-items: center;
-      padding: 1rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 0.5rem;
-      background: var(--bg-secondary);
-      transition: var(--transition);
-    }
-
-    .contact-item:hover {
-      background: var(--bg-primary);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .contact-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      margin-right: 1rem;
-      flex-shrink: 0;
-    }
-
-    .contact-info {
-      flex: 1;
-    }
-
-    .contact-name {
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.25rem;
-    }
-
-    .contact-details {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-    }
-
-    .download-section {
-      text-align: center;
-    }
-
-    .download-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.875rem 2rem;
-      background: var(--success);
-      color: white;
-      text-decoration: none;
-      border-radius: var(--radius);
-      font-size: 1rem;
-      font-weight: 600;
-      transition: var(--transition);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .download-btn:hover {
-      background: #047857;
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .download-info {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      margin-top: 1rem;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-muted);
-    }
-
-    .empty-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 1rem;
-      opacity: 0.5;
-    }
-
-    .footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      color: var(--text-muted);
-      font-size: 0.875rem;
-    }
-
-    .footer a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-
-    .loading-spinner {
-      width: 20px;
-      height: 20px;
-      border: 2px solid transparent;
-      border-top: 2px solid currentColor;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .session-expired {
-      text-align: center;
-      padding: 3rem 1rem;
-    }
-
-    .expired-icon {
-      width: 64px;
-      height: 64px;
-      background: var(--error);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.5rem;
-      color: white;
-    }
-
-    .expired-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .expired-description {
-      color: var(--text-secondary);
-      margin-bottom: 2rem;
-    }
-
-    @media (max-width: 640px) {
-      .container {
-        padding: 0.5rem;
-      }
-      
-      .card {
-        padding: 1.5rem;
-      }
-      
-      .session-title {
-        font-size: 1.5rem;
-      }
-      
-      .main-content {
-        gap: 1rem;
-      }
-    }
+    .container { min-height: 100vh; padding: 1rem; background: var(--bg-secondary); }
+    .header { text-align: center; padding: 2rem 0; }
+    .session-title { font-size: 1.875rem; font-weight: 700; margin-bottom: .5rem; }
+    .session-status { display: flex; align-items: center; justify-content: center; gap: .5rem; color: var(--text-secondary); }
+    .status-indicator { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+    .status-indicator.expired { background: var(--error); animation: none; }
+    @keyframes pulse { 50% { opacity: .5; } }
+    .countdown { font-weight: 600; color: var(--primary); }
+    .countdown.warning { color: var(--warning); }
+    .countdown.expired { color: var(--error); }
+    .main-content { max-width: 600px; margin: 0 auto; display: grid; gap: 2rem; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: 0 4px 6px -1px rgb(0 0 0 / .1); padding: 2rem; }
+    .card-header { margin-bottom: 1.5rem; }
+    .card-title { font-size: 1.25rem; font-weight: 600; }
+    .card-description { color: var(--text-secondary); font-size: .875rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-size: .875rem; font-weight: 600; margin-bottom: .5rem; }
+    .form-input { width: 100%; padding: .75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; background: var(--bg-primary); color: var(--text-primary); }
+    .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgb(37 99 235 / .1); }
+    .form-input.error { border-color: var(--error); }
+    .error-text { color: var(--error); font-size: .75rem; margin-top: .25rem; display: none; }
+    .add-btn { width: 100%; padding: .875rem 1.5rem; background: var(--primary); color: #fff; border: none; border-radius: var(--radius); font-size: 1rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
+    .add-btn:hover:not(:disabled) { background: var(--primary-hover); }
+    .add-btn:disabled { background: var(--text-muted); cursor: not-allowed; }
+    .success-message { background: #f0fdf4; border: 1px solid #bbf7d0; color: var(--success); padding: .75rem 1rem; border-radius: var(--radius); margin-bottom: 1rem; display: none; }
+    .download-section { text-align: center; }
+    .download-btn { display: inline-flex; align-items: center; gap: .5rem; padding: .875rem 2rem; background: var(--success); color: #fff; text-decoration: none; border-radius: var(--radius); font-weight: 600; }
+    .download-btn:hover { background: #047857; }
+    .footer { text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: .875rem; }
+    .footer a { color: var(--primary); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+    .session-expired { text-align: center; padding: 3rem 1rem; }
+    .expired-icon { width: 64px; height: 64px; background: var(--error); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: #fff; font-size: 2rem; }
+    @media (max-width: 640px) { .container { padding: .5rem; } .card { padding: 1.5rem; } }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="header">
-      <img src="/media/logo.svg" alt="VCF Session" class="logo">
-      <h1 id="sessionTitle" class="session-title">Loading...</h1>
+      <h1 id="sessionTitle" class="session-title">Loading…</h1>
       <div class="session-status">
         <div id="statusIndicator" class="status-indicator"></div>
         <span>Session expires in <span id="countdown" class="countdown">--:--</span></span>
@@ -521,443 +93,146 @@
     </div>
 
     <div class="main-content">
-      <!-- Contact Form Card -->
+      <!-- Add-Contact Card -->
       <div id="contactForm" class="card">
         <div class="card-header">
           <h2 class="card-title">Add Your Contact</h2>
           <p class="card-description">Share your contact information with other participants</p>
         </div>
 
-        <div id="successMessage" class="success-message" role="alert">
-          Contact added successfully!
-        </div>
+        <div id="successMessage" class="success-message">Contact added!</div>
 
         <form id="addContactForm">
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="contactName" class="form-label">
-                Full Name<span class="required">*</span>
-              </label>
-              <input 
-                id="contactName" 
-                type="text" 
-                class="form-input"
-                placeholder="John Doe"
-                required
-                autocomplete="name"
-                aria-describedby="nameError"
-              >
-              <div id="nameError" class="error-text">Please enter your full name</div>
-            </div>
-
-            <div class="form-group">
-              <label for="contactPhone" class="form-label">
-                Phone Number<span class="required">*</span>
-              </label>
-              <input 
-                id="contactPhone" 
-                type="tel" 
-                class="form-input"
-                placeholder="+1234567890"
-                required
-                autocomplete="tel"
-                aria-describedby="phoneError"
-              >
-              <div id="phoneError" class="error-text">Phone number must start with +</div>
-            </div>
+          <div class="form-group">
+            <label for="contactName" class="form-label">Full Name *</label>
+            <input id="contactName" type="text" class="form-input" placeholder="John Doe" required autocomplete="name">
+            <div id="nameError" class="error-text"></div>
           </div>
 
-          <button type="submit" id="addBtn" class="add-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            <span id="addBtnText">Add Contact</span>
-          </button>
+          <div class="form-group">
+            <label for="contactPhone" class="form-label">Phone Number *</label>
+            <input id="contactPhone" type="tel" class="form-input" placeholder="+1234567890" required autocomplete="tel">
+            <div id="phoneError" class="error-text"></div>
+          </div>
+
+          <button type="submit" id="addBtn" class="add-btn">Add Contact</button>
         </form>
       </div>
 
-      <!-- Session Expired Card -->
-      <div id="expiredCard" class="card" style="display: none;">
+      <!-- Expired Notice -->
+      <div id="expiredCard" class="card" style="display:none;">
         <div class="session-expired">
-          <div class="expired-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12,6 12,12 16,14"></polyline>
-            </svg>
-          </div>
-          <h2 class="expired-title">Session Expired</h2>
-          <p class="expired-description">This contact sharing session has ended. You can now download all collected contacts.</p>
+          <div class="expired-icon">✖</div>
+          <h2 class="card-title">Session Expired</h2>
+          <p class="card-description">This session has ended. You may still download the collected contacts.</p>
         </div>
       </div>
 
-      <!-- Contacts List Card -->
-      <div id="contactsSection" class="card contacts-section">
-        <div class="card-header">
-          <div class="contacts-header">
-            <h2 class="card-title">Collected Contacts</h2>
-            <div class="contact-count">
-              <span id="contactCount">0</span> contacts
-            </div>
-          </div>
-        </div>
-
-        <ul id="contactsList" class="contacts-list"></ul>
-
-        <div class="empty-state" id="emptyState">
-          <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          <p>No contacts collected yet</p>
-        </div>
-
+      <!-- Download Section -->
+      <div id="downloadSection" class="card" style="display:none;">
         <div class="download-section">
-          <a id="downloadBtn" class="download-btn" style="display: none;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7,10 12,15 17,10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            Download VCF File
-          </a>
-          <p class="download-info">
-            Download all contacts as a VCF file that can be imported into your contacts app
-          </p>
+          <a id="downloadBtn" class="download-btn" href="">Download VCF File</a>
+          <p class="card-description">Import the file into any contacts app</p>
         </div>
       </div>
     </div>
 
     <div class="footer">
-      Join our WhatsApp group: 
+      Join our WhatsApp group:
       <a href="https://chat.whatsapp.com/Ca964nXye06F3vXbmW9kWq?mode=ems_copy_c" target="_blank" rel="noopener">VCF GROUP</a>
     </div>
   </div>
 
   <script>
-    // Get session ID from URL
     const sessionId = window.location.pathname.split('/').pop();
-    if (!sessionId) {
-      window.location.href = '/';
-    }
+    if (!sessionId) window.location.href = '/';
 
-    // DOM elements
     const sessionTitle = document.getElementById('sessionTitle');
-    const statusIndicator = document.getElementById('statusIndicator');
+    const statusInd = document.getElementById('statusIndicator');
     const countdown = document.getElementById('countdown');
     const contactForm = document.getElementById('contactForm');
     const expiredCard = document.getElementById('expiredCard');
-    const contactsSection = document.getElementById('contactsSection');
-    const addContactForm = document.getElementById('addContactForm');
-    const addBtn = document.getElementById('addBtn');
-    const addBtnText = document.getElementById('addBtnText');
-    const successMessage = document.getElementById('successMessage');
-    const contactsList = document.getElementById('contactsList');
-    const contactCount = document.getElementById('contactCount');
-    const emptyState = document.getElementById('emptyState');
+    const downloadSect = document.getElementById('downloadSection');
     const downloadBtn = document.getElementById('downloadBtn');
-
-    // Form inputs
+    const addForm = document.getElementById('addContactForm');
+    const successMsg = document.getElementById('successMessage');
     const nameInput = document.getElementById('contactName');
     const phoneInput = document.getElementById('contactPhone');
-    const emailInput = document.getElementById('contactEmail');
-    const companyInput = document.getElementById('contactCompany');
+    const nameError = document.getElementById('nameError');
+    const phoneError = document.getElementById('phoneError');
 
-    // State
     let sessionData = null;
     let isExpired = false;
-    let isSubmitting = false;
-    let countdownInterval = null;
+    let countdownTimer = null;
 
-    // Utility functions
-    function sanitizeInput(str) {
-      return str.replace(/[\x00-\x1F\x7F]/g, ' ').trim();
-    }
+    const sanitize = str => str.replace(/[\x00-\x1F\x7F]/g, ' ').trim();
 
-    function getInitials(name) {
-      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-    }
-
-    function formatPhone(phone) {
-      // Basic phone formatting - can be enhanced
-      return phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-    }
-
-    function validateEmail(email) {
-      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return re.test(email);
-    }
-
-    function validatePhone(phone) {
-      const re = /^[\+]?[\d\s\-\(\)]{10,}$/;
-      return re.test(phone);
-    }
-
-    function showError(input, errorElement, message) {
-      input.classList.add('error');
-      errorElement.textContent = message;
-      errorElement.style.display = 'block';
-    }
-
-    function hideError(input, errorElement) {
-      input.classList.remove('error');
-      errorElement.style.display = 'none';
-    }
-
-    function showSuccess() {
-      successMessage.style.display = 'block';
-      setTimeout(() => {
-        successMessage.style.display = 'none';
-      }, 3000);
-    }
-
-    function setSubmitting(submitting) {
-      isSubmitting = submitting;
-      addBtn.disabled = submitting;
-      
-      if (submitting) {
-        addBtnText.textContent = 'Adding...';
-        addBtn.insertAdjacentHTML('afterbegin', '<div class="loading-spinner"></div>');
-      } else {
-        addBtnText.textContent = 'Add Contact';
-        const spinner = addBtn.querySelector('.loading-spinner');
-        if (spinner) spinner.remove();
-      }
-    }
-
-    // Load session data
     async function loadSession() {
-      try {
-        const response = await fetch(`/api/session/${sessionId}`);
-        
-        if (!response.ok) {
-          document.body.innerHTML = `
-            <div class="container">
-              <div class="card" style="text-align: center; max-width: 400px; margin: 2rem auto;">
-                <h1>Session Not Found</h1>
-                <p style="color: var(--text-secondary); margin: 1rem 0;">This session may have expired or doesn't exist.</p>
-                <a href="/" style="color: var(--primary); text-decoration: none;">← Create New Session</a>
-              </div>
-            </div>
-          `;
-          return;
-        }
-
-        sessionData = await response.json();
-        sessionTitle.textContent = sessionData.name;
-        
-        renderContacts();
-        startCountdown();
-        
-      } catch (error) {
-        console.error('Failed to load session:', error);
-        document.body.innerHTML = `
-          <div class="container">
-            <div class="card" style="text-align: center; max-width: 400px; margin: 2rem auto;">
-              <h1>Connection Error</h1>
-              <p style="color: var(--text-secondary); margin: 1rem 0;">Unable to load session. Please check your connection.</p>
-              <button onclick="location.reload()" style="background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: var(--radius); cursor: pointer;">Retry</button>
-            </div>
-          </div>
-        `;
-      }
+      const res = await fetch(`/api/session/${sessionId}`);
+      if (!res.ok) { document.body.innerHTML = `<div class="card empty-state"><h2>Session Not Found</h2><a href="/">← Home</a></div>`; return; }
+      sessionData = await res.json();
+      sessionTitle.textContent = sessionData.name;
+      startCountdown();
     }
+    loadSession();
 
-    // Countdown timer
     function startCountdown() {
-      if (!sessionData) return;
-      
-      const updateCountdown = () => {
-        const now = Date.now();
-        const timeLeft = sessionData.expiresAt - now;
-        
-        if (timeLeft <= 0) {
+      function tick() {
+        const left = sessionData.expiresAt - Date.now();
+        if (left <= 0) {
           isExpired = true;
           countdown.textContent = 'Expired';
           countdown.classList.add('expired');
-          statusIndicator.classList.add('expired');
-          
+          statusInd.classList.add('expired');
           contactForm.style.display = 'none';
           expiredCard.style.display = 'block';
-          contactsSection.classList.add('show');
-          
-          if (sessionData.contacts.length > 0) {
-            downloadBtn.style.display = 'inline-flex';
-            downloadBtn.href = `/api/session/${sessionId}/contacts.vcf`;
-          }
-          
-          if (countdownInterval) {
-            clearInterval(countdownInterval);
-          }
+          downloadSect.style.display = 'block';
+          downloadBtn.href = `/api/session/${sessionId}/contacts.vcf`;
+          clearInterval(countdownTimer);
           return;
         }
-        
-        const minutes = Math.floor(timeLeft / 60000);
-        const seconds = Math.floor((timeLeft % 60000) / 1000);
-        const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        
-        countdown.textContent = timeString;
-        
-        if (timeLeft < 300000) { // Less than 5 minutes
-          countdown.classList.add('warning');
-        }
-      };
-      
-      updateCountdown();
-      countdownInterval = setInterval(updateCountdown, 1000);
+        const m = String(Math.floor(left / 60000)).padStart(2, '0');
+        const s = String(Math.floor((left % 60000) / 1000)).padStart(2, '0');
+        countdown.textContent = `${m}:${s}`;
+        if (left < 300000) countdown.classList.add('warning');
+      }
+      tick();
+      countdownTimer = setInterval(tick, 1000);
     }
 
-    // Render contacts list
-    function renderContacts() {
-      if (!sessionData) return;
-      
-      const contacts = sessionData.contacts || [];
-      contactCount.textContent = contacts.length;
-      
-      if (contacts.length === 0) {
-        contactsList.style.display = 'none';
-        emptyState.style.display = 'block';
-        return;
-      }
-      
-      contactsList.style.display = 'block';
-      emptyState.style.display = 'none';
-      
-      contactsList.innerHTML = contacts.map(contact => {
-        const initials = getInitials(contact.name);
-        const details = [contact.phone];
-        if (contact.email) details.push(contact.email);
-        if (contact.company) details.push(contact.company);
-        
-        return `
-          <li class="contact-item">
-            <div class="contact-avatar">${initials}</div>
-            <div class="contact-info">
-              <div class="contact-name">${contact.name}</div>
-              <div class="contact-details">${details.join(' • ')}</div>
-            </div>
-          </li>
-        `;
-      }).join('');
-    }
+    function showError(el, msg) { el.classList.add('error'); el.nextElementSibling.textContent = msg; el.nextElementSibling.style.display = 'block'; }
+    function hideError(el) { el.classList.remove('error'); el.nextElementSibling.style.display = 'none'; }
 
-    // Form validation
-    function validateForm() {
-      let isValid = true;
-      
-      // Name validation
-      const name = sanitizeInput(nameInput.value);
-      if (!name) {
-        showError(nameInput, document.getElementById('nameError'), 'Please enter your full name');
-        isValid = false;
-      } else {
-        hideError(nameInput, document.getElementById('nameError'));
-      }
-      
-      // Phone validation
-      const phone = sanitizeInput(phoneInput.value);
-      if (!phone) {
-        showError(phoneInput, document.getElementById('phoneError'), 'Please enter your phone number');
-        isValid = false;
-      } else if (!validatePhone(phone)) {
-        showError(phoneInput, document.getElementById('phoneError'), 'Please enter a valid phone number');
-        isValid = false;
-      } else {
-        hideError(phoneInput, document.getElementById('phoneError'));
-      }
-      
-      // Email validation (optional)
-      const email = sanitizeInput(emailInput.value);
-      if (email && !validateEmail(email)) {
-        showError(emailInput, document.getElementById('emailError'), 'Please enter a valid email address');
-        isValid = false;
-      } else {
-        hideError(emailInput, document.getElementById('emailError'));
-      }
-      
-      return isValid;
-    }
-
-    // Form submission
-    addContactForm.addEventListener('submit', async (e) => {
+    addForm.addEventListener('submit', async e => {
       e.preventDefault();
-      
-      if (isExpired || isSubmitting) return;
-      
-      if (!validateForm()) return;
-      
-      const contactData = {
-        name: sanitizeInput(nameInput.value),
-        phone: sanitizeInput(phoneInput.value),
-        email: sanitizeInput(emailInput.value),
-        company: sanitizeInput(companyInput.value)
-      };
-      
-      setSubmitting(true);
-      
-      try {
-        const response = await fetch(`/api/session/${sessionId}/contact`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(contactData)
-        });
-        
-        if (response.ok) {
-          showSuccess();
-          addContactForm.reset();
-          await loadSession(); // Reload to get updated contacts
-        } else {
-          const error = await response.json();
-          alert(error.error || 'Failed to add contact. Please try again.');
-        }
-      } catch (error) {
-        console.error('Failed to add contact:', error);
-        alert('Network error. Please check your connection and try again.');
-      } finally {
-        setSubmitting(false);
-      }
-    });
+      if (isExpired) return;
 
-    // Real-time validation
-    nameInput.addEventListener('blur', () => {
-      const name = sanitizeInput(nameInput.value);
-      if (!name) {
-        showError(nameInput, document.getElementById('nameError'), 'Please enter your full name');
+      const name = sanitize(nameInput.value);
+      const phone = sanitize(phoneInput.value);
+
+      let ok = true;
+      if (!name) { showError(nameInput, 'Name required'); ok = false; } else hideError(nameInput);
+      if (!phone) { showError(phoneInput, 'Phone required'); ok = false; } else hideError(phoneInput);
+      if (!ok) return;
+
+      const res = await fetch(`/api/session/${sessionId}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone })
+      });
+
+      if (res.ok) {
+        successMsg.style.display = 'block';
+        addForm.reset();
+        await loadSession();
+        setTimeout(() => successMsg.style.display = 'none', 3000);
       } else {
-        hideError(nameInput, document.getElementById('nameError'));
+        const err = await res.json();
+        alert(err.error || 'Failed to add contact');
       }
     });
 
-    phoneInput.addEventListener('blur', () => {
-      const phone = sanitizeInput(phoneInput.value);
-      if (!phone) {
-        showError(phoneInput, document.getElementById('phoneError'), 'Phone number must start with +');
-      } else if (!validatePhone(phone)) {
-        showError(phoneInput, document.getElementById('phoneError'), 'Phone number must start with +');
-      } else {
-        hideError(phoneInput, document.getElementById('phoneError'));
-      }
-    });
-
-
-    // Initialize
-    loadSession();
-
-    // Auto-focus on name input
-    setTimeout(() => {
-      nameInput.focus();
-    }, 100);
-
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', () => {
-      if (countdownInterval) {
-        clearInterval(countdownInterval);
-      }
-    });
+    window.addEventListener('beforeunload', () => clearInterval(countdownTimer));
   </script>
 </body>
 </html>
