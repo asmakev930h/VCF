@@ -558,36 +558,12 @@
                 id="contactPhone" 
                 type="tel" 
                 class="form-input"
-                placeholder="+1 (555) 123-4567"
+                placeholder="+1234567890"
                 required
                 autocomplete="tel"
                 aria-describedby="phoneError"
               >
-              <div id="phoneError" class="error-text">Please enter a valid phone number</div>
-            </div>
-
-            <div class="form-group full-width">
-              <label for="contactEmail" class="form-label">Email Address</label>
-              <input 
-                id="contactEmail" 
-                type="email" 
-                class="form-input"
-                placeholder="john@example.com"
-                autocomplete="email"
-                aria-describedby="emailError"
-              >
-              <div id="emailError" class="error-text">Please enter a valid email address</div>
-            </div>
-
-            <div class="form-group full-width">
-              <label for="contactCompany" class="form-label">Company/Organization</label>
-              <input 
-                id="contactCompany" 
-                type="text" 
-                class="form-input"
-                placeholder="Acme Corporation"
-                autocomplete="organization"
-              >
+              <div id="phoneError" class="error-text">Phone number must start with +</div>
             </div>
           </div>
 
@@ -959,22 +935,14 @@
     phoneInput.addEventListener('blur', () => {
       const phone = sanitizeInput(phoneInput.value);
       if (!phone) {
-        showError(phoneInput, document.getElementById('phoneError'), 'Please enter your phone number');
+        showError(phoneInput, document.getElementById('phoneError'), 'Phone number must start with +');
       } else if (!validatePhone(phone)) {
-        showError(phoneInput, document.getElementById('phoneError'), 'Please enter a valid phone number');
+        showError(phoneInput, document.getElementById('phoneError'), 'Phone number must start with +');
       } else {
         hideError(phoneInput, document.getElementById('phoneError'));
       }
     });
 
-    emailInput.addEventListener('blur', () => {
-      const email = sanitizeInput(emailInput.value);
-      if (email && !validateEmail(email)) {
-        showError(emailInput, document.getElementById('emailError'), 'Please enter a valid email address');
-      } else {
-        hideError(emailInput, document.getElementById('emailError'));
-      }
-    });
 
     // Initialize
     loadSession();
