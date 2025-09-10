@@ -1,0 +1,20 @@
+{
+  "name": "my-api",
+  "version": "1.0.0",
+  "description": "Simple Express API with static files",
+  "main": "server",
+  "scripts": {
+    "start": "node server",
+    "dev": "node server"
+  },
+  "keywords": [
+    "api",
+    "express"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0",
+    "uuid": "^13.0.0"
+  }
+}
