@@ -31,10 +31,15 @@
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
       --radius: 8px;
       --radius-lg: 12px;
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-normal: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+      --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     @media (prefers-color-scheme: dark) {
@@ -52,6 +57,7 @@
         --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
         --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
         --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 10px 10px -5px rgb(0 0 0 / 0.3);
       }
     }
 
@@ -67,8 +73,10 @@
       background: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
+    /* Enhanced background with animated gradient */
     .container {
       min-height: 100vh;
       display: flex;
@@ -76,18 +84,49 @@
       justify-content: center;
       padding: 1rem;
       background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      position: relative;
     }
 
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.05) 0%, transparent 50%);
+      animation: backgroundShift 20s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes backgroundShift {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.1); }
+    }
+
+    /* Enhanced card with entrance animation */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-xl);
       width: 100%;
       max-width: 480px;
       padding: 2rem;
       position: relative;
       overflow: hidden;
+      backdrop-filter: blur(10px);
+      animation: cardEntrance 0.6s var(--ease-out) forwards;
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    @keyframes cardEntrance {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     .card::before {
@@ -98,14 +137,41 @@
       right: 0;
       height: 4px;
       background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+      animation: progressBar 0.8s var(--ease-out) 0.3s forwards;
+      transform: scaleX(0);
+      transform-origin: left;
     }
 
+    @keyframes progressBar {
+      to { transform: scaleX(1); }
+    }
+
+    /* Enhanced logo with hover animation */
     .logo {
       height: 48px;
       margin: 0 auto 2rem;
       display: block;
+      transition: var(--transition-normal);
+      animation: logoFloat 0.8s var(--ease-out) 0.2s both;
     }
 
+    .logo:hover {
+      transform: scale(1.05) rotate(2deg);
+      filter: brightness(1.1);
+    }
+
+    @keyframes logoFloat {
+      from {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Enhanced header with staggered animation */
     .header {
       text-align: center;
       margin-bottom: 2rem;
@@ -117,16 +183,35 @@
       color: var(--text-primary);
       margin-bottom: 0.5rem;
       letter-spacing: -0.025em;
+      animation: slideInUp 0.6s var(--ease-out) 0.4s both;
     }
 
     .header p {
       color: var(--text-secondary);
       font-size: 1rem;
+      animation: slideInUp 0.6s var(--ease-out) 0.5s both;
     }
 
+    @keyframes slideInUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Enhanced form elements with micro-interactions */
     .form-group {
       margin-bottom: 1.5rem;
+      animation: slideInUp 0.6s var(--ease-out) calc(0.6s + var(--stagger, 0s)) both;
     }
+
+    .form-group:nth-child(1) { --stagger: 0s; }
+    .form-group:nth-child(2) { --stagger: 0.1s; }
+    .form-group:nth-child(3) { --stagger: 0.2s; }
 
     .form-label {
       display: block;
@@ -134,6 +219,7 @@
       font-weight: 600;
       color: var(--text-primary);
       margin-bottom: 0.5rem;
+      transition: var(--transition-fast);
     }
 
     .form-input {
@@ -144,19 +230,33 @@
       font-size: 1rem;
       background: var(--bg-primary);
       color: var(--text-primary);
-      transition: var(--transition);
+      transition: var(--transition-normal);
+      position: relative;
     }
 
     .form-input:focus {
       outline: none;
       border-color: var(--border-focus);
       box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+      transform: translateY(-1px);
+    }
+
+    .form-input:hover:not(:focus) {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
     }
 
     .form-input::placeholder {
       color: var(--text-muted);
+      transition: var(--transition-fast);
     }
 
+    .form-input:focus::placeholder {
+      opacity: 0.7;
+      transform: translateX(4px);
+    }
+
+    /* Enhanced duration selection with improved animations */
     .duration-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -166,6 +266,25 @@
 
     .duration-option {
       position: relative;
+      animation: scaleIn 0.4s var(--ease-out) calc(0.8s + var(--option-delay, 0s)) both;
+    }
+
+    .duration-option:nth-child(1) { --option-delay: 0s; }
+    .duration-option:nth-child(2) { --option-delay: 0.05s; }
+    .duration-option:nth-child(3) { --option-delay: 0.1s; }
+    .duration-option:nth-child(4) { --option-delay: 0.15s; }
+    .duration-option:nth-child(5) { --option-delay: 0.2s; }
+    .duration-option:nth-child(6) { --option-delay: 0.25s; }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .duration-radio {
@@ -182,29 +301,46 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       cursor: pointer;
-      transition: var(--transition);
+      transition: var(--transition-normal);
       font-size: 0.875rem;
       font-weight: 500;
       background: var(--bg-primary);
       color: var(--text-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .duration-label::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: var(--transition-normal);
+    }
+
+    .duration-label:hover::before {
+      left: 100%;
     }
 
     .duration-radio:checked + .duration-label {
       background: var(--primary);
       border-color: var(--primary);
       color: white;
+      box-shadow: var(--shadow-md);
+      transform: scale(1.02);
+    }
+
+    .duration-label:hover:not(.duration-radio:checked + *) {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
       box-shadow: var(--shadow-sm);
     }
 
-    .duration-label:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .duration-radio:checked + .duration-label:hover {
-      color: white;
-    }
-
+    /* Enhanced button with loading animation */
     .create-btn {
       width: 100%;
       padding: 0.875rem 1.5rem;
@@ -215,23 +351,40 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
+      transition: var(--transition-normal);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
       position: relative;
       overflow: hidden;
+      animation: slideInUp 0.6s var(--ease-out) 1.1s both;
+    }
+
+    .create-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: var(--transition-normal);
+    }
+
+    .create-btn:hover:not(:disabled)::before {
+      left: 100%;
     }
 
     .create-btn:hover:not(:disabled) {
       background: var(--primary-hover);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
     }
 
     .create-btn:active:not(:disabled) {
-      transform: translateY(0);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
 
     .create-btn:disabled {
@@ -241,19 +394,30 @@
       box-shadow: none;
     }
 
+    .create-btn:disabled::before {
+      display: none;
+    }
+
+    /* Enhanced loading spinner */
     .loading-spinner {
       width: 20px;
       height: 20px;
       border: 2px solid transparent;
       border-top: 2px solid currentColor;
       border-radius: 50%;
-      animation: spin 1s linear infinite;
+      animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
     }
 
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
 
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Enhanced error message with slide animation */
     .error-message {
       background: #fef2f2;
       border: 1px solid #fecaca;
@@ -263,7 +427,20 @@
       font-size: 0.875rem;
       margin-bottom: 1rem;
       display: none;
-      animation: slideIn 0.3s ease-out;
+      animation: errorSlideIn 0.3s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes errorSlideIn {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
 
     @media (prefers-color-scheme: dark) {
@@ -273,14 +450,26 @@
       }
     }
 
+    /* Enhanced success section with celebration animation */
     .success-section {
       display: none;
       text-align: center;
-      animation: slideIn 0.3s ease-out;
+      animation: successEntrance 0.6s var(--ease-out);
     }
 
     .success-section.show {
       display: block;
+    }
+
+    @keyframes successEntrance {
+      from {
+        transform: scale(0.8) rotate(-5deg);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
     }
 
     .success-icon {
@@ -293,6 +482,32 @@
       justify-content: center;
       margin: 0 auto 1.5rem;
       color: white;
+      animation: successBounce 0.6s var(--ease-out) 0.2s both;
+      position: relative;
+    }
+
+    .success-icon::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--success);
+      animation: successRipple 1s ease-out 0.3s;
+      z-index: -1;
+    }
+
+    @keyframes successBounce {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes successRipple {
+      to {
+        transform: scale(2);
+        opacity: 0;
+      }
     }
 
     .success-title {
@@ -300,19 +515,29 @@
       font-weight: 600;
       color: var(--text-primary);
       margin-bottom: 0.5rem;
+      animation: slideInUp 0.6s var(--ease-out) 0.4s both;
     }
 
     .success-description {
       color: var(--text-secondary);
       margin-bottom: 1.5rem;
+      animation: slideInUp 0.6s var(--ease-out) 0.5s both;
     }
 
+    /* Enhanced URL container with copy animation */
     .url-container {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1rem;
       margin-bottom: 1rem;
+      animation: slideInUp 0.6s var(--ease-out) 0.6s both;
+      transition: var(--transition-normal);
+    }
+
+    .url-container:hover {
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
     }
 
     .url-display {
@@ -329,6 +554,11 @@
       font-size: 0.875rem;
       font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
       outline: none;
+      transition: var(--transition-fast);
+    }
+
+    .url-input:focus {
+      color: var(--primary);
     }
 
     .copy-btn {
@@ -340,18 +570,44 @@
       font-size: 0.875rem;
       font-weight: 500;
       cursor: pointer;
-      transition: var(--transition);
+      transition: var(--transition-normal);
       display: flex;
       align-items: center;
       gap: 0.375rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .copy-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: var(--transition-fast);
+    }
+
+    .copy-btn:hover::before {
+      left: 100%;
     }
 
     .copy-btn:hover {
       background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
     }
 
     .copy-btn.copied {
       background: var(--success);
+      animation: copySuccess 0.3s var(--ease-out);
+    }
+
+    @keyframes copySuccess {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
 
     .new-session-btn {
@@ -364,14 +620,35 @@
       font-size: 0.875rem;
       font-weight: 500;
       cursor: pointer;
-      transition: var(--transition);
+      transition: var(--transition-normal);
+      animation: slideInUp 0.6s var(--ease-out) 0.7s both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .new-session-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--primary);
+      transition: var(--transition-normal);
+      z-index: -1;
+    }
+
+    .new-session-btn:hover::before {
+      left: 0;
     }
 
     .new-session-btn:hover {
-      background: var(--primary);
       color: white;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
     }
 
+    /* Enhanced footer with attribution */
     .footer {
       position: fixed;
       bottom: 1rem;
@@ -380,29 +657,51 @@
       text-align: center;
       font-size: 0.875rem;
       color: var(--text-muted);
+      animation: fadeIn 1s var(--ease-out) 1.5s both;
+      z-index: 10;
     }
 
     .footer a {
       color: var(--primary);
       text-decoration: none;
       font-weight: 500;
+      transition: var(--transition-fast);
     }
 
     .footer a:hover {
       text-decoration: underline;
+      color: var(--primary-hover);
     }
 
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .attribution {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      opacity: 0.8;
+      transition: var(--transition-fast);
     }
 
+    .attribution:hover {
+      opacity: 1;
+    }
+
+    .attribution .creator {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition-fast);
+    }
+
+    .attribution .creator:hover {
+      color: var(--primary-hover);
+      text-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Responsive design enhancements */
     @media (max-width: 640px) {
       .container {
         padding: 0.5rem;
@@ -410,6 +709,7 @@
       
       .card {
         padding: 1.5rem;
+        margin: 0.5rem;
       }
       
       .header h1 {
@@ -419,6 +719,33 @@
       .duration-grid {
         grid-template-columns: 1fr;
       }
+
+      .footer {
+        position: relative;
+        margin-top: 2rem;
+        transform: none;
+        left: auto;
+      }
+    }
+
+    /* Reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Focus visible for accessibility */
+    .create-btn:focus-visible,
+    .copy-btn:focus-visible,
+    .new-session-btn:focus-visible,
+    .duration-label:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
     }
   </style>
 </head>
@@ -450,36 +777,35 @@
             >
           </div>
 
- <div class="form-group">
-  <label class="form-label">Session Duration</label>
-  <div class="duration-grid">
-    <div class="duration-option">
-      <input type="radio" id="duration5" name="duration" value="5" class="duration-radio">
-      <label for="duration5" class="duration-label">5 min</label>
-    </div>
-    <div class="duration-option">
-      <input type="radio" id="duration15" name="duration" value="15" class="duration-radio">
-      <label for="duration15" class="duration-label">15 min</label>
-    </div>
-    <div class="duration-option">
-      <input type="radio" id="duration30" name="duration" value="30" class="duration-radio" checked>
-      <label for="duration30" class="duration-label">30 min</label>
-    </div>
-    <div class="duration-option">
-      <input type="radio" id="duration60" name="duration" value="60" class="duration-radio">
-      <label for="duration60" class="duration-label">1 hr</label>
-    </div>
-    <div class="duration-option">
-      <input type="radio" id="duration300" name="duration" value="300" class="duration-radio">
-      <label for="duration300" class="duration-label">5 hrs</label>
-    </div>
-    <div class="duration-option">
-      <input type="radio" id="duration420" name="duration" value="420" class="duration-radio">
-      <label for="duration420" class="duration-label">7 hrs</label>
-    </div>
-  </div>
-</div>
-
+          <div class="form-group">
+            <label class="form-label">Session Duration</label>
+            <div class="duration-grid">
+              <div class="duration-option">
+                <input type="radio" id="duration5" name="duration" value="5" class="duration-radio">
+                <label for="duration5" class="duration-label">5 min</label>
+              </div>
+              <div class="duration-option">
+                <input type="radio" id="duration15" name="duration" value="15" class="duration-radio">
+                <label for="duration15" class="duration-label">15 min</label>
+              </div>
+              <div class="duration-option">
+                <input type="radio" id="duration30" name="duration" value="30" class="duration-radio" checked>
+                <label for="duration30" class="duration-label">30 min</label>
+              </div>
+              <div class="duration-option">
+                <input type="radio" id="duration60" name="duration" value="60" class="duration-radio">
+                <label for="duration60" class="duration-label">1 hr</label>
+              </div>
+              <div class="duration-option">
+                <input type="radio" id="duration300" name="duration" value="300" class="duration-radio">
+                <label for="duration300" class="duration-label">5 hrs</label>
+              </div>
+              <div class="duration-option">
+                <input type="radio" id="duration420" name="duration" value="420" class="duration-radio">
+                <label for="duration420" class="duration-label">7 hrs</label>
+              </div>
+            </div>
+          </div>
 
           <button type="submit" id="createBtn" class="create-btn" disabled>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -519,11 +845,17 @@
   </div>
 
   <div class="footer">
-    Join our WhatsApp group: 
-    <a href="https://chat.whatsapp.com/Ca964nXye06F3vXbmW9kWq?mode=ems_copy_c" target="_blank" rel="noopener">VCF GROUP</a>
+    <div>
+      Join our WhatsApp group: 
+      <a href="https://chat.whatsapp.com/Ca964nXye06F3vXbmW9kWq?mode=ems_copy_c" target="_blank" rel="noopener">VCF GROUP</a>
+    </div>
+    <div class="attribution">
+      Created by <a href="#" class="creator">Daemon</a>
+    </div>
   </div>
 
   <script>
+    // Enhanced JavaScript with improved animations and interactions
     const sessionForm = document.getElementById('sessionForm');
     const sessionNameInput = document.getElementById('sessionName');
     const createBtn = document.getElementById('createBtn');
@@ -538,10 +870,24 @@
 
     let isCreating = false;
 
-    // Form validation
+    // Enhanced form validation with visual feedback
     function validateForm() {
       const name = sanitizeInput(sessionNameInput.value);
-      createBtn.disabled = !name || isCreating;
+      const isValid = name && !isCreating;
+      
+      createBtn.disabled = !isValid;
+      
+      // Add visual feedback for validation
+      if (name) {
+        sessionNameInput.style.borderColor = 'var(--success)';
+        sessionNameInput.style.boxShadow = '0 0 0 3px rgba(5, 150, 105, 0.1)';
+      } else if (sessionNameInput.value) {
+        sessionNameInput.style.borderColor = 'var(--error)';
+        sessionNameInput.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.1)';
+      } else {
+        sessionNameInput.style.borderColor = 'var(--border)';
+        sessionNameInput.style.boxShadow = 'none';
+      }
     }
 
     function sanitizeInput(str) {
@@ -551,9 +897,32 @@
     function showError(message) {
       errorMessage.textContent = message;
       errorMessage.style.display = 'block';
+      
+      // Add shake animation for error
+      errorMessage.style.animation = 'none';
+      setTimeout(() => {
+        errorMessage.style.animation = 'errorSlideIn 0.3s var(--ease-out), shake 0.5s ease-in-out 0.3s';
+      }, 10);
+      
       setTimeout(() => {
         errorMessage.style.display = 'none';
       }, 5000);
+    }
+
+    // Add shake animation for errors
+    const shakeKeyframes = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+    `;
+    
+    if (!document.querySelector('#shake-styles')) {
+      const style = document.createElement('style');
+      style.id = 'shake-styles';
+      style.textContent = shakeKeyframes;
+      document.head.appendChild(style);
     }
 
     function setLoading(loading) {
@@ -563,19 +932,56 @@
       if (loading) {
         createBtnText.textContent = 'Creating...';
         createBtn.insertAdjacentHTML('afterbegin', '<div class="loading-spinner"></div>');
+        createBtn.style.transform = 'scale(0.98)';
       } else {
         createBtnText.textContent = 'Create Session';
         const spinner = createBtn.querySelector('.loading-spinner');
         if (spinner) spinner.remove();
+        createBtn.style.transform = '';
       }
     }
 
-    // Event listeners
-    sessionNameInput.addEventListener('input', validateForm);
+    // Enhanced event listeners with improved UX
+    sessionNameInput.addEventListener('input', (e) => {
+      validateForm();
+      
+      // Add typing animation effect
+      const label = document.querySelector('label[for="sessionName"]');
+      if (e.target.value) {
+        label.style.color = 'var(--primary)';
+        label.style.transform = 'translateY(-2px)';
+      } else {
+        label.style.color = 'var(--text-primary)';
+        label.style.transform = 'translateY(0)';
+      }
+    });
+
     sessionNameInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !createBtn.disabled) {
+        e.preventDefault();
         sessionForm.dispatchEvent(new Event('submit'));
       }
+    });
+
+    // Add focus animations
+    sessionNameInput.addEventListener('focus', () => {
+      sessionNameInput.parentElement.style.transform = 'scale(1.02)';
+    });
+
+    sessionNameInput.addEventListener('blur', () => {
+      sessionNameInput.parentElement.style.transform = 'scale(1)';
+    });
+
+    // Enhanced duration selection with better feedback
+    document.querySelectorAll('input[name="duration"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        // Add selection animation
+        const label = radio.nextElementSibling;
+        label.style.animation = 'none';
+        setTimeout(() => {
+          label.style.animation = 'copySuccess 0.3s var(--ease-out)';
+        }, 10);
+      });
     });
 
     sessionForm.addEventListener('submit', async (e) => {
@@ -588,6 +994,7 @@
       
       if (!name) {
         showError('Please enter a session name');
+        sessionNameInput.focus();
         return;
       }
 
@@ -612,13 +1019,18 @@
           const sessionUrl = `${window.location.origin}/session/${data.id}`;
           urlInput.value = sessionUrl;
           
-          createFormSection.style.display = 'none';
-          successSection.classList.add('show');
+          // Enhanced transition animation
+          createFormSection.style.animation = 'slideOutLeft 0.4s var(--ease-in-out) forwards';
           
-          // Auto-select URL for easy copying
           setTimeout(() => {
-            urlInput.select();
-          }, 100);
+            createFormSection.style.display = 'none';
+            successSection.classList.add('show');
+            
+            // Auto-select URL for easy copying
+            setTimeout(() => {
+              urlInput.select();
+            }, 600);
+          }, 400);
         } else {
           showError(data.error || 'Failed to create session. Please try again.');
         }
@@ -630,11 +1042,15 @@
       }
     });
 
+    // Enhanced copy functionality with better feedback
     copyBtn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(urlInput.value);
         copyBtnText.textContent = 'Copied!';
         copyBtn.classList.add('copied');
+        
+        // Add success particle effect
+        createParticleEffect(copyBtn);
         
         setTimeout(() => {
           copyBtnText.textContent = 'Copy';
@@ -654,21 +1070,115 @@
       }
     });
 
+    // Particle effect for copy success
+    function createParticleEffect(element) {
+      const rect = element.getBoundingClientRect();
+      const particles = 6;
+      
+      for (let i = 0; i < particles; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+          position: fixed;
+          width: 4px;
+          height: 4px;
+          background: var(--success);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 1000;
+          left: ${rect.left + rect.width / 2}px;
+          top: ${rect.top + rect.height / 2}px;
+        `;
+        
+        document.body.appendChild(particle);
+        
+        const angle = (i / particles) * Math.PI * 2;
+        const velocity = 50 + Math.random() * 30;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+        
+        particle.animate([
+          { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+          { transform: `translate(${vx}px, ${vy}px) scale(0)`, opacity: 0 }
+        ], {
+          duration: 600,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        }).onfinish = () => particle.remove();
+      }
+    }
+
     newSessionBtn.addEventListener('click', () => {
-      successSection.classList.remove('show');
-      createFormSection.style.display = 'block';
-      sessionForm.reset();
-      document.getElementById('duration5').checked = true;
-      validateForm();
+      // Enhanced transition back to form
+      successSection.style.animation = 'slideOutRight 0.4s var(--ease-in-out) forwards';
+      
+      setTimeout(() => {
+        successSection.classList.remove('show');
+        createFormSection.style.display = 'block';
+        createFormSection.style.animation = 'slideInLeft 0.4s var(--ease-out) forwards';
+        
+        sessionForm.reset();
+        document.getElementById('duration30').checked = true;
+        validateForm();
+        
+        // Focus on input after animation
+        setTimeout(() => {
+          sessionNameInput.focus();
+        }, 200);
+      }, 400);
     });
 
-    // Initialize
+    // Add slide animations
+    const slideAnimations = `
+      @keyframes slideOutLeft {
+        to { transform: translateX(-100%); opacity: 0; }
+      }
+      @keyframes slideOutRight {
+        to { transform: translateX(100%); opacity: 0; }
+      }
+      @keyframes slideInLeft {
+        from { transform: translateX(-100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+    `;
+    
+    if (!document.querySelector('#slide-styles')) {
+      const style = document.createElement('style');
+      style.id = 'slide-styles';
+      style.textContent = slideAnimations;
+      document.head.appendChild(style);
+    }
+
+    // Initialize with enhanced UX
     validateForm();
 
-    // Auto-focus on session name input
+    // Enhanced auto-focus with delay for better UX
     setTimeout(() => {
       sessionNameInput.focus();
-    }, 100);
+      sessionNameInput.style.animation = 'pulse 0.5s ease-in-out';
+    }, 1200);
+
+    // Add keyboard navigation enhancements
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (successSection.classList.contains('show')) {
+          newSessionBtn.click();
+        }
+      }
+    });
+
+    // Add hover effects for duration options
+    document.querySelectorAll('.duration-label').forEach(label => {
+      label.addEventListener('mouseenter', () => {
+        if (!label.previousElementSibling.checked) {
+          label.style.transform = 'translateY(-2px) scale(1.02)';
+        }
+      });
+      
+      label.addEventListener('mouseleave', () => {
+        if (!label.previousElementSibling.checked) {
+          label.style.transform = '';
+        }
+      });
+    });
   </script>
 </body>
 </html>
