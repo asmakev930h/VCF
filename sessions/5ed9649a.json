@@ -2,5 +2,10 @@
   "id": "5ed9649a",
   "name": "Contact",
   "expiresAt": 1757589492818,
-  "contacts": []
+  "contacts": [
+    {
+      "name": "DAEMON",
+      "phone": "+2347041039367"
+    }
+  ]
 }
