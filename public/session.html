@@ -22,8 +22,17 @@
       --radius: 8px;
       --radius-lg: 12px;
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --transition: all .2s cubic-bezier(.4,0,.2,1);
+      --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-normal: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+      --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
     }
+
     @media (prefers-color-scheme: dark) {
       :root {
         --primary: #3b82f6;
@@ -35,50 +44,664 @@
         --text-secondary: #cbd5e1;
         --text-muted: #64748b;
         --border: #334155;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 10px 10px -5px rgb(0 0 0 / 0.3);
       }
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
     html, body {
       height: 100%;
       font-family: var(--font-sans);
       background: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.6;
+      overflow-x: hidden;
     }
-    .container { min-height: 100vh; padding: 1rem; background: var(--bg-secondary); }
-    .header { text-align: center; padding: 2rem 0; }
-    .session-title { font-size: 1.875rem; font-weight: 700; margin-bottom: .5rem; }
-    .session-status { display: flex; align-items: center; justify-content: center; gap: .5rem; color: var(--text-secondary); }
-    .status-indicator { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
-    .status-indicator.expired { background: var(--error); animation: none; }
-    @keyframes pulse { 50% { opacity: .5; } }
-    .countdown { font-weight: 600; color: var(--primary); }
-    .countdown.warning { color: var(--warning); }
-    .countdown.expired { color: var(--error); }
-    .main-content { max-width: 600px; margin: 0 auto; display: grid; gap: 2rem; }
-    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: 0 4px 6px -1px rgb(0 0 0 / .1); padding: 2rem; }
-    .card-header { margin-bottom: 1.5rem; }
-    .card-title { font-size: 1.25rem; font-weight: 600; }
-    .card-description { color: var(--text-secondary); font-size: .875rem; }
-    .form-group { margin-bottom: 1rem; }
-    .form-label { display: block; font-size: .875rem; font-weight: 600; margin-bottom: .5rem; }
-    .form-input { width: 100%; padding: .75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; background: var(--bg-primary); color: var(--text-primary); }
-    .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgb(37 99 235 / .1); }
-    .form-input.error { border-color: var(--error); }
-    .error-text { color: var(--error); font-size: .75rem; margin-top: .25rem; display: none; }
-    .add-btn { width: 100%; padding: .875rem 1.5rem; background: var(--primary); color: #fff; border: none; border-radius: var(--radius); font-size: 1rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
-    .add-btn:hover:not(:disabled) { background: var(--primary-hover); }
-    .add-btn:disabled { background: var(--text-muted); cursor: not-allowed; }
-    .success-message { background: #f0fdf4; border: 1px solid #bbf7d0; color: var(--success); padding: .75rem 1rem; border-radius: var(--radius); margin-bottom: 1rem; display: none; }
-    .download-section { text-align: center; }
-    .download-btn { display: inline-flex; align-items: center; gap: .5rem; padding: .875rem 2rem; background: var(--success); color: #fff; text-decoration: none; border-radius: var(--radius); font-weight: 600; }
-    .download-btn:hover { background: #047857; }
-    .footer { text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: .875rem; }
-    .footer a { color: var(--primary); text-decoration: none; }
-    .footer a:hover { text-decoration: underline; }
-    .session-expired { text-align: center; padding: 3rem 1rem; }
-    .expired-icon { width: 64px; height: 64px; background: var(--error); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: #fff; font-size: 2rem; }
-    @media (max-width: 640px) { .container { padding: .5rem; } .card { padding: 1.5rem; } }
+
+    /* Enhanced container with animated background */
+    .container { 
+      min-height: 100vh; 
+      padding: 1rem; 
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      position: relative;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 70%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 30%, rgba(37, 99, 235, 0.05) 0%, transparent 50%);
+      animation: backgroundFloat 15s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes backgroundFloat {
+      0%, 100% { opacity: 1; transform: translateY(0); }
+      50% { opacity: 0.7; transform: translateY(-10px); }
+    }
+
+    /* Enhanced header with staggered animations */
+    .header { 
+      text-align: center; 
+      padding: 2rem 0;
+      animation: headerEntrance 0.8s var(--ease-out) forwards;
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    @keyframes headerEntrance {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .session-title { 
+      font-size: 1.875rem; 
+      font-weight: 700; 
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--text-primary), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: titleShimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes titleShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .session-status { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 0.5rem; 
+      color: var(--text-secondary);
+      animation: statusSlideIn 0.6s var(--ease-out) 0.3s both;
+    }
+
+    @keyframes statusSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .status-indicator { 
+      width: 8px; 
+      height: 8px; 
+      border-radius: 50%; 
+      background: var(--success); 
+      animation: statusPulse 2s infinite, indicatorEntrance 0.5s var(--ease-out) 0.5s both;
+      position: relative;
+    }
+
+    .status-indicator::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--success);
+      animation: statusRipple 2s infinite;
+      z-index: -1;
+    }
+
+    @keyframes statusPulse { 
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); } 
+    }
+
+    @keyframes statusRipple {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+
+    @keyframes indicatorEntrance {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    .status-indicator.expired { 
+      background: var(--error); 
+      animation: errorPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes errorPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .countdown { 
+      font-weight: 600; 
+      color: var(--primary);
+      transition: var(--transition-normal);
+      position: relative;
+    }
+
+    .countdown.warning { 
+      color: var(--warning);
+      animation: warningBlink 1s ease-in-out infinite;
+    }
+
+    @keyframes warningBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .countdown.expired { 
+      color: var(--error);
+      animation: expiredShake 0.5s ease-in-out;
+    }
+
+    @keyframes expiredShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      75% { transform: translateX(3px); }
+    }
+
+    /* Enhanced main content with staggered card animations */
+    .main-content { 
+      max-width: 600px; 
+      margin: 0 auto; 
+      display: grid; 
+      gap: 2rem;
+    }
+
+    .card { 
+      background: var(--bg-card); 
+      border: 1px solid var(--border); 
+      border-radius: var(--radius-lg); 
+      box-shadow: var(--shadow-lg); 
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      animation: cardSlideIn 0.6s var(--ease-out) calc(0.2s * var(--card-index, 0)) both;
+      transition: var(--transition-normal);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: cardTopBar 0.8s var(--ease-out) calc(0.4s + 0.2s * var(--card-index, 0)) forwards;
+    }
+
+    @keyframes cardSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes cardTopBar {
+      to { transform: scaleX(1); }
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    #contactForm { --card-index: 0; }
+    #expiredCard { --card-index: 1; }
+    #downloadSection { --card-index: 2; }
+
+    .card-header { 
+      margin-bottom: 1.5rem;
+      animation: headerContentSlide 0.6s var(--ease-out) calc(0.6s + 0.2s * var(--card-index, 0)) both;
+    }
+
+    @keyframes headerContentSlide {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .card-title { 
+      font-size: 1.25rem; 
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-description { 
+      color: var(--text-secondary); 
+      font-size: 0.875rem; 
+    }
+
+    /* Enhanced form elements with micro-interactions */
+    .form-group { 
+      margin-bottom: 1rem;
+      animation: formGroupSlide 0.5s var(--ease-out) calc(0.8s + 0.1s * var(--group-index, 0)) both;
+    }
+
+    .form-group:nth-child(1) { --group-index: 0; }
+    .form-group:nth-child(2) { --group-index: 1; }
+    .form-group:nth-child(3) { --group-index: 2; }
+
+    @keyframes formGroupSlide {
+      from {
+        opacity: 0;
+        transform: translateX(-15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .form-label { 
+      display: block; 
+      font-size: 0.875rem; 
+      font-weight: 600; 
+      margin-bottom: 0.5rem;
+      transition: var(--transition-fast);
+      position: relative;
+    }
+
+    .form-label::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: var(--transition-normal);
+    }
+
+    .form-input { 
+      width: 100%; 
+      padding: 0.75rem 1rem; 
+      border: 1px solid var(--border); 
+      border-radius: var(--radius); 
+      font-size: 1rem; 
+      background: var(--bg-primary); 
+      color: var(--text-primary);
+      transition: var(--transition-normal);
+      position: relative;
+    }
+
+    .form-input:focus { 
+      outline: none; 
+      border-color: var(--primary); 
+      box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+      transform: translateY(-1px);
+    }
+
+    .form-input:focus + .form-label::after,
+    .form-input:not(:placeholder-shown) + .form-label::after {
+      width: 100%;
+    }
+
+    .form-input:hover:not(:focus) {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .form-input.error { 
+      border-color: var(--error);
+      animation: inputShake 0.4s ease-in-out;
+    }
+
+    @keyframes inputShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .error-text { 
+      color: var(--error); 
+      font-size: 0.75rem; 
+      margin-top: 0.25rem; 
+      display: none;
+      animation: errorSlideDown 0.3s var(--ease-out);
+    }
+
+    @keyframes errorSlideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Enhanced button with loading and hover effects */
+    .add-btn { 
+      width: 100%; 
+      padding: 0.875rem 1.5rem; 
+      background: var(--primary); 
+      color: #fff; 
+      border: none; 
+      border-radius: var(--radius); 
+      font-size: 1rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+      animation: buttonSlideIn 0.6s var(--ease-out) 1.2s both;
+    }
+
+    .add-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: var(--transition-normal);
+    }
+
+    .add-btn:hover:not(:disabled)::before {
+      left: 100%;
+    }
+
+    @keyframes buttonSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .add-btn:hover:not(:disabled) { 
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .add-btn:active:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .add-btn:disabled { 
+      background: var(--text-muted); 
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Enhanced success message with celebration animation */
+    .success-message { 
+      background: #f0fdf4; 
+      border: 1px solid #bbf7d0; 
+      color: var(--success); 
+      padding: 0.75rem 1rem; 
+      border-radius: var(--radius); 
+      margin-bottom: 1rem; 
+      display: none;
+      animation: successSlideIn 0.5s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .success-message::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.1), transparent);
+      animation: successSweep 0.8s ease-out;
+    }
+
+    @keyframes successSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes successSweep {
+      to { left: 100%; }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .success-message {
+        background: #064e3b;
+        border-color: #047857;
+      }
+    }
+
+    /* Enhanced download section */
+    .download-section { 
+      text-align: center;
+      animation: downloadEntrance 0.6s var(--ease-out) 0.3s both;
+    }
+
+    @keyframes downloadEntrance {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .download-btn { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      padding: 0.875rem 2rem; 
+      background: var(--success); 
+      color: #fff; 
+      text-decoration: none; 
+      border-radius: var(--radius); 
+      font-weight: 600;
+      transition: var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: var(--transition-normal);
+    }
+
+    .download-btn:hover::before {
+      left: 100%;
+    }
+
+    .download-btn:hover { 
+      background: #047857;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Enhanced footer with attribution */
+    .footer { 
+      text-align: center; 
+      padding: 2rem 1rem; 
+      color: var(--text-muted); 
+      font-size: 0.875rem;
+      animation: footerFadeIn 1s var(--ease-out) 1.5s both;
+    }
+
+    @keyframes footerFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .footer a { 
+      color: var(--primary); 
+      text-decoration: none;
+      transition: var(--transition-fast);
+    }
+
+    .footer a:hover { 
+      text-decoration: underline;
+      color: var(--primary-hover);
+    }
+
+    .attribution {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      opacity: 0.8;
+      transition: var(--transition-fast);
+    }
+
+    .attribution:hover {
+      opacity: 1;
+    }
+
+    .attribution .creator {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition-fast);
+    }
+
+    .attribution .creator:hover {
+      color: var(--primary-hover);
+      text-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Enhanced expired session styling */
+    .session-expired { 
+      text-align: center; 
+      padding: 3rem 1rem;
+      animation: expiredEntrance 0.8s var(--ease-out);
+    }
+
+    @keyframes expiredEntrance {
+      from {
+        opacity: 0;
+        transform: scale(0.9) rotate(-2deg);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    .expired-icon { 
+      width: 64px; 
+      height: 64px; 
+      background: var(--error); 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      margin: 0 auto 1.5rem; 
+      color: #fff; 
+      font-size: 2rem;
+      animation: expiredIconBounce 0.6s var(--ease-out) 0.2s both;
+      position: relative;
+    }
+
+    .expired-icon::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--error);
+      animation: expiredRipple 1.5s ease-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes expiredIconBounce {
+      0% { transform: scale(0) rotate(180deg); }
+      50% { transform: scale(1.2) rotate(0deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    @keyframes expiredRipple {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+
+    /* Responsive design enhancements */
+    @media (max-width: 640px) { 
+      .container { 
+        padding: 0.5rem; 
+      } 
+      
+      .card { 
+        padding: 1.5rem; 
+      }
+
+      .session-title {
+        font-size: 1.5rem;
+      }
+
+      .footer {
+        padding: 1rem;
+      }
+    }
+
+    /* Reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Focus visible for accessibility */
+    .add-btn:focus-visible,
+    .download-btn:focus-visible,
+    .form-input:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
   </style>
 </head>
 
@@ -100,7 +723,7 @@
           <p class="card-description">Share your contact information with other participants</p>
         </div>
 
-        <div id="successMessage" class="success-message">Contact added!</div>
+        <div id="successMessage" class="success-message">Contact added successfully!</div>
 
         <form id="addContactForm">
           <div class="form-group">
@@ -115,7 +738,13 @@
             <div id="phoneError" class="error-text"></div>
           </div>
 
-          <button type="submit" id="addBtn" class="add-btn">Add Contact</button>
+          <button type="submit" id="addBtn" class="add-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Contact
+          </button>
         </form>
       </div>
 
@@ -131,19 +760,32 @@
       <!-- Download Section -->
       <div id="downloadSection" class="card" style="display:none;">
         <div class="download-section">
-          <a id="downloadBtn" class="download-btn" href="">Download VCF File</a>
+          <a id="downloadBtn" class="download-btn" href="">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7,10 12,15 17,10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download VCF File
+          </a>
           <p class="card-description">Import the file into any contacts app</p>
         </div>
       </div>
     </div>
 
     <div class="footer">
-      Join our WhatsApp group:
-      <a href="https://chat.whatsapp.com/Ca964nXye06F3vXbmW9kWq?mode=ems_copy_c" target="_blank" rel="noopener">VCF GROUP</a>
+      <div>
+        Join our WhatsApp group:
+        <a href="https://chat.whatsapp.com/Ca964nXye06F3vXbmW9kWq?mode=ems_copy_c" target="_blank" rel="noopener">VCF GROUP</a>
+      </div>
+      <div class="attribution">
+        Created by <a href="#" class="creator">Daemon</a>
+      </div>
     </div>
   </div>
 
   <script>
+    // Enhanced JavaScript with improved animations and interactions
     const sessionId = window.location.pathname.split('/').pop();
     if (!sessionId) window.location.href = '/';
 
@@ -160,6 +802,7 @@
     const phoneInput = document.getElementById('contactPhone');
     const nameError = document.getElementById('nameError');
     const phoneError = document.getElementById('phoneError');
+    const addBtn = document.getElementById('addBtn');
 
     let sessionData = null;
     let isExpired = false;
@@ -167,42 +810,144 @@
 
     const sanitize = str => str.replace(/[\x00-\x1F\x7F]/g, ' ').trim();
 
+    // Enhanced session loading with better error handling
     async function loadSession() {
-      const res = await fetch(`/api/session/${sessionId}`);
-      if (!res.ok) { document.body.innerHTML = `<div class="card empty-state"><h2>Session Not Found</h2><a href="/">← Home</a></div>`; return; }
-      sessionData = await res.json();
-      sessionTitle.textContent = sessionData.name;
-      startCountdown();
+      try {
+        const res = await fetch(`/api/session/${sessionId}`);
+        if (!res.ok) { 
+          showErrorPage('Session Not Found', 'This session may have been deleted or never existed.');
+          return; 
+        }
+        sessionData = await res.json();
+        sessionTitle.textContent = sessionData.name;
+        
+        // Add title animation after loading
+        sessionTitle.style.animation = 'none';
+        setTimeout(() => {
+          sessionTitle.style.animation = 'titleShimmer 3s ease-in-out infinite';
+        }, 100);
+        
+        startCountdown();
+      } catch (error) {
+        console.error('Failed to load session:', error);
+        showErrorPage('Connection Error', 'Unable to load session. Please check your connection.');
+      }
     }
+
+    function showErrorPage(title, message) {
+      document.body.innerHTML = `
+        <div class="container">
+          <div class="card" style="text-align: center; max-width: 400px; margin: 0 auto;">
+            <div class="expired-icon" style="margin: 0 auto 1.5rem;">!</div>
+            <h2>${title}</h2>
+            <p style="margin: 1rem 0;">${message}</p>
+            <a href="/" style="color: var(--primary); text-decoration: none; font-weight: 600;">← Create New Session</a>
+          </div>
+        </div>
+      `;
+    }
+
     loadSession();
 
+    // Enhanced countdown with better visual feedback
     function startCountdown() {
       function tick() {
         const left = sessionData.expiresAt - Date.now();
+        
         if (left <= 0) {
           isExpired = true;
           countdown.textContent = 'Expired';
           countdown.classList.add('expired');
           statusInd.classList.add('expired');
-          contactForm.style.display = 'none';
-          expiredCard.style.display = 'block';
-          downloadSect.style.display = 'block';
-          downloadBtn.href = `/api/session/${sessionId}/contacts.vcf`;
+          
+          // Enhanced transition to expired state
+          contactForm.style.animation = 'cardSlideOut 0.5s var(--ease-in-out) forwards';
+          setTimeout(() => {
+            contactForm.style.display = 'none';
+            expiredCard.style.display = 'block';
+            downloadSect.style.display = 'block';
+            downloadBtn.href = `/api/session/${sessionId}/contacts.vcf`;
+          }, 500);
+          
           clearInterval(countdownTimer);
           return;
         }
-        const m = String(Math.floor(left / 60000)).padStart(2, '0');
-        const s = String(Math.floor((left % 60000) / 1000)).padStart(2, '0');
+        
+        const minutes = Math.floor(left / 60000);
+        const seconds = Math.floor((left % 60000) / 1000);
+        const m = String(minutes).padStart(2, '0');
+        const s = String(seconds).padStart(2, '0');
         countdown.textContent = `${m}:${s}`;
-        if (left < 300000) countdown.classList.add('warning');
+        
+        // Add warning state for last 5 minutes
+        if (left < 300000 && !countdown.classList.contains('warning')) {
+          countdown.classList.add('warning');
+          // Add subtle shake animation
+          countdown.style.animation = 'warningBlink 1s ease-in-out infinite';
+        }
       }
+      
       tick();
       countdownTimer = setInterval(tick, 1000);
     }
 
-    function showError(el, msg) { el.classList.add('error'); el.nextElementSibling.textContent = msg; el.nextElementSibling.style.display = 'block'; }
-    function hideError(el) { el.classList.remove('error'); el.nextElementSibling.style.display = 'none'; }
+    // Add slide out animation
+    const additionalStyles = `
+      @keyframes cardSlideOut {
+        to { 
+          opacity: 0; 
+          transform: translateX(-100%) scale(0.9); 
+        }
+      }
+    `;
+    
+    const style = document.createElement('style');
+    style.textContent = additionalStyles;
+    document.head.appendChild(style);
 
+    // Enhanced form validation with visual feedback
+    function showError(input, errorEl, msg) { 
+      input.classList.add('error'); 
+      errorEl.textContent = msg; 
+      errorEl.style.display = 'block';
+      
+      // Add shake animation
+      input.style.animation = 'inputShake 0.4s ease-in-out';
+      setTimeout(() => {
+        input.style.animation = '';
+      }, 400);
+    }
+
+    function hideError(input, errorEl) { 
+      input.classList.remove('error'); 
+      errorEl.style.display = 'none'; 
+    }
+
+    // Enhanced input interactions
+    [nameInput, phoneInput].forEach(input => {
+      input.addEventListener('focus', () => {
+        input.parentElement.style.transform = 'scale(1.02)';
+        const label = input.parentElement.querySelector('.form-label');
+        label.style.color = 'var(--primary)';
+      });
+
+      input.addEventListener('blur', () => {
+        input.parentElement.style.transform = 'scale(1)';
+        const label = input.parentElement.querySelector('.form-label');
+        if (!input.value) {
+          label.style.color = 'var(--text-primary)';
+        }
+      });
+
+      input.addEventListener('input', () => {
+        const errorEl = input.nextElementSibling;
+        if (input.value.trim()) {
+          hideError(input, errorEl);
+        }
+      });
+    });
+
+    // Enhanced form submission with loading state
     addForm.addEventListener('submit', async e => {
       e.preventDefault();
       if (isExpired) return;
@@ -210,29 +955,140 @@
       const name = sanitize(nameInput.value);
       const phone = sanitize(phoneInput.value);
 
-      let ok = true;
-      if (!name) { showError(nameInput, 'Name required'); ok = false; } else hideError(nameInput);
-      if (!phone) { showError(phoneInput, 'Phone required'); ok = false; } else hideError(phoneInput);
-      if (!ok) return;
+      let isValid = true;
+      if (!name) { 
+        showError(nameInput, nameError, 'Name is required'); 
+        isValid = false; 
+      } else { 
+        hideError(nameInput, nameError); 
+      }
+      
+      if (!phone) { 
+        showError(phoneInput, phoneError, 'Phone number is required'); 
+        isValid = false; 
+      } else { 
+        hideError(phoneInput, phoneError); 
+      }
+      
+      if (!isValid) return;
 
-      const res = await fetch(`/api/session/${sessionId}/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone })
-      });
+      // Add loading state
+      addBtn.disabled = true;
+      addBtn.innerHTML = `
+        <div class="loading-spinner" style="width: 20px; height: 20px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        Adding...
+      `;
 
-      if (res.ok) {
-        successMsg.style.display = 'block';
-        addForm.reset();
-        await loadSession();
-        setTimeout(() => successMsg.style.display = 'none', 3000);
-      } else {
-        const err = await res.json();
-        alert(err.error || 'Failed to add contact');
+      try {
+        const res = await fetch(`/api/session/${sessionId}/contact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone })
+        });
+
+        if (res.ok) {
+          // Enhanced success feedback
+          successMsg.style.display = 'block';
+          addForm.reset();
+          
+          // Create success particle effect
+          createSuccessParticles(addBtn);
+          
+          await loadSession();
+          
+          setTimeout(() => {
+            successMsg.style.display = 'none';
+          }, 3000);
+        } else {
+          const err = await res.json();
+          showError(nameInput, nameError, err.error || 'Failed to add contact');
+        }
+      } catch (error) {
+        console.error('Error adding contact:', error);
+        showError(nameInput, nameError, 'Network error. Please try again.');
+      } finally {
+        // Restore button state
+        addBtn.disabled = false;
+        addBtn.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Add Contact
+        `;
       }
     });
 
-    window.addEventListener('beforeunload', () => clearInterval(countdownTimer));
+    // Success particle effect
+    function createSuccessParticles(element) {
+      const rect = element.getBoundingClientRect();
+      const particles = 8;
+      
+      for (let i = 0; i < particles; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+          position: fixed;
+          width: 6px;
+          height: 6px;
+          background: var(--success);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 1000;
+          left: ${rect.left + rect.width / 2}px;
+          top: ${rect.top + rect.height / 2}px;
+        `;
+        
+        document.body.appendChild(particle);
+        
+        const angle = (i / particles) * Math.PI * 2;
+        const velocity = 60 + Math.random() * 40;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+        
+        particle.animate([
+          { 
+            transform: 'translate(0, 0) scale(1)', 
+            opacity: 1,
+            background: 'var(--success)'
+          },
+          { 
+            transform: `translate(${vx}px, ${vy}px) scale(0)`, 
+            opacity: 0,
+            background: 'var(--primary)'
+          }
+        ], {
+          duration: 800,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        }).onfinish = () => particle.remove();
+      }
+    }
+
+    // Enhanced keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
+        const firstInput = document.querySelector('.form-input:not([disabled])');
+        if (firstInput) firstInput.focus();
+      }
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      if (countdownTimer) clearInterval(countdownTimer);
+    });
+
+    // Add loading animation for spin
+    const spinKeyframes = `
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    `;
+    
+    if (!document.querySelector('#spin-styles')) {
+      const spinStyle = document.createElement('style');
+      spinStyle.id = 'spin-styles';
+      spinStyle.textContent = spinKeyframes;
+      document.head.appendChild(spinStyle);
+    }
   </script>
 </body>
 </html>
