@@ -2,6 +2,7 @@
   "name": "my-api",
   "version": "1.0.0",
   "description": "Simple Express API with static files",
+  "type": "commonjs",
   "main": "server",
   "scripts": {
     "start": "node server",
