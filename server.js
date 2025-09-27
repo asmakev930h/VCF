@@ -12,6 +12,7 @@ if (!fs.existsSync(SESSION_DIR)) fs.mkdirSync(SESSION_DIR);
 const SEEN = new Map();
 const RATE_WINDOW = 60_000;
 const RATE_MAX = 20;
+const LIMIT = 1000;
 
 function isRateLimited(ip) {
   const now = Date.now();
@@ -81,7 +82,7 @@ app.post('/api/session/:id/contact', (req, res) => {
 
   const s = readSession(req.params.id);
   if (!s) return res.status(404).json({ error: 'Not found' });
-  if (s.contacts.length >= 200) return res.status(422).json({ error: 'Session full' });
+  if (s.contacts.length >= LIMIT) return res.status(422).json({ error: 'Session full' });
 
   s.contacts.push({ name, phone });
   writeSession(req.params.id, s);
@@ -92,14 +93,17 @@ app.get('/api/session/:id/contacts.vcf', (req, res) => {
   const s = readSession(req.params.id);
   if (!s) return res.status(404).send('Not found');
 
+  const safeName = "contacts";
+
   let vcf = '';
   s.contacts.forEach(c => {
     vcf += `BEGIN:VCARD\r\nVERSION:3.0\r\nFN:${c.name}\r\nTEL:${c.phone}\r\nEND:VCARD\r\n`;
   });
 
   res.set('Content-Type', 'text/vcard');
-  res.set('Content-Disposition', `attachment; filename="${s.name.replace(/\s+/g, '_')}.vcf"`);
+  res.set('Content-Disposition', `attachment; filename="${safeName}.vcf"`);
   res.send(vcf);
 });
+
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
