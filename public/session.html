@@ -734,7 +734,7 @@
 
           <div class="form-group">
             <label for="contactPhone" class="form-label">Phone Number *</label>
-            <input id="contactPhone" type="tel" class="form-input" placeholder="+1234567890" required autocomplete="tel">
+            <input id="contactPhone" type="tel" class="form-input" placeholder="+234 70*****" required autocomplete="tel">
             <div id="phoneError" class="error-text"></div>
           </div>
 
@@ -776,10 +776,10 @@
     <div class="footer">
       <div>
         Join our WhatsApp group:
-        <a href="https://chat.whatsapp.com/Ca964nXye06F3vXbmW9kWq?mode=ems_copy_c" target="_blank" rel="noopener">VCF GROUP</a>
+        <a href="https://chat.whatsapp.com/JRe69IJCINM3qYX3gM8MI9?mode=ems_copy_c" target="_blank" rel="noopener">VCF GROUP</a>
       </div>
       <div class="attribution">
-        Created by <a href="#" class="creator">Daemon</a>
+        Created by <a href="https://wa.me/2347041039367" class="creator">Daemon</a>
       </div>
     </div>
   </div>
@@ -849,47 +849,51 @@
 
     loadSession();
 
-    // Enhanced countdown with better visual feedback
-    function startCountdown() {
-      function tick() {
-        const left = sessionData.expiresAt - Date.now();
-        
-        if (left <= 0) {
-          isExpired = true;
-          countdown.textContent = 'Expired';
-          countdown.classList.add('expired');
-          statusInd.classList.add('expired');
-          
-          // Enhanced transition to expired state
-          contactForm.style.animation = 'cardSlideOut 0.5s var(--ease-in-out) forwards';
-          setTimeout(() => {
-            contactForm.style.display = 'none';
-            expiredCard.style.display = 'block';
-            downloadSect.style.display = 'block';
-            downloadBtn.href = `/api/session/${sessionId}/contacts.vcf`;
-          }, 500);
-          
-          clearInterval(countdownTimer);
-          return;
-        }
-        
-        const minutes = Math.floor(left / 60000);
-        const seconds = Math.floor((left % 60000) / 1000);
-        const m = String(minutes).padStart(2, '0');
-        const s = String(seconds).padStart(2, '0');
-        countdown.textContent = `${m}:${s}`;
-        
-        // Add warning state for last 5 minutes
-        if (left < 300000 && !countdown.classList.contains('warning')) {
-          countdown.classList.add('warning');
-          // Add subtle shake animation
-          countdown.style.animation = 'warningBlink 1s ease-in-out infinite';
-        }
-      }
-      
-      tick();
-      countdownTimer = setInterval(tick, 1000);
+ function startCountdown() {
+  function tick() {
+    const left = sessionData.expiresAt - Date.now();
+    if (left <= 0) {
+      isExpired = true;
+      countdown.textContent = 'Expired';
+      countdown.classList.add('expired');
+      statusInd.classList.add('expired');
+
+      contactForm.style.animation = 'cardSlideOut .5s ease-in-out forwards';
+      setTimeout(() => {
+        contactForm.style.display = 'none';
+        expiredCard.style.display = 'block';
+        downloadSect.style.display = 'block';
+        downloadBtn.href = `/api/session/${sessionId}/contacts.vcf`;
+      }, 500);
+
+      clearInterval(countdownTimer);
+      return;
     }
+
+    /* ----------  pretty format  ---------- */
+    const totalSec = Math.floor(left / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+
+    let pretty = '';
+    if (h) pretty += `${h}h `;
+    if (m || h) pretty += `${m}m `;
+    pretty += `${s}s`;
+
+    countdown.textContent = pretty.trim();
+
+    /* ----------  warning colours  ---------- */
+    if (left < 300_000 && !countdown.classList.contains('warning')) {
+      countdown.classList.add('warning');
+      countdown.style.animation = 'warningBlink 1s ease-in-out infinite';
+    }
+  }
+
+  tick();
+  countdownTimer = setInterval(tick, 1000);
+}
+
 
     // Add slide out animation
     const additionalStyles = `
